@@ -5,30 +5,47 @@ async function invokeAction({ action, id, name, email, phone }) {
   switch (action) {
     case "list":
       const contacts = await contactOperations.listContacts();
+      if (contacts.length === 0) {
+        console.log("Список контактов пуст!");
+        return;
+      }
 
-      console.log(contacts);
+      console.table(contacts);
       break;
 
     case "get":
       const contact = await contactOperations.getContactById(id);
 
-      console.log(contact);
+      if (contact) {
+        console.log("Контакт найден!\n", contact);
+      } else {
+        console.log("Контакт не найден!");
+      }
       break;
 
     case "add":
+      if (!name || !email || !phone) {
+        console.log("Нужно заполнить все поля (name, email, phone)!");
+        return;
+      }
+
       const newContact = await contactOperations.addContact({
         name,
         email,
         phone,
       });
 
-      console.log(newContact);
+      console.log("Контакт успешно добавлен!\n", newContact);
       break;
 
     case "remove":
       const removedContact = await contactOperations.removeContact(id);
 
-      console.log(removedContact);
+      if (removedContact) {
+        console.log("Контакт удален!\n", removedContact);
+      } else {
+        console.log("Контакт для удаления не найден!");
+      }
       break;
 
     default:
